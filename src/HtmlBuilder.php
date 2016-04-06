@@ -2,7 +2,7 @@
 
 namespace Collective\Html;
 
-use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Traits\Macroable;
 
 class HtmlBuilder
@@ -12,14 +12,14 @@ class HtmlBuilder
     /**
      * The URL generator instance.
      *
-     * @var \Illuminate\Contracts\Routing\UrlGenerator
+     * @var \Illuminate\Routing\UrlGenerator
      */
     protected $url;
 
     /**
      * Create a new HTML builder instance.
      *
-     * @param \Illuminate\Contracts\Routing\UrlGenerator $url
+     * @param \Illuminate\Routing\UrlGenerator $url
      *
      * @return void
      */
@@ -294,13 +294,7 @@ class HtmlBuilder
         $html = "<dl{$attributes}>";
 
         foreach ($list as $key => $value) {
-            $value = (array) $value;
-            
-            $html .= "<dt>$key</dt>";
-            
-            foreach ($value as $v_key => $v_value) {
-                $html .= "<dd>$v_value</dd>";
-            }
+            $html .= "<dt>$key</dt><dd>$value</dd>";
         }
 
         $html .= '</dl>';

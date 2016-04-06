@@ -3,8 +3,8 @@
 namespace Collective\Html;
 
 use DateTime;
-use Illuminate\Contracts\Routing\UrlGenerator;
-use Illuminate\Session\SessionInterface;
+use Illuminate\Routing\UrlGenerator;
+use Illuminate\Session\Store as Session;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
 
@@ -22,7 +22,7 @@ class FormBuilder
   /**
    * The URL generator instance.
    *
-   * @var \Illuminate\Contracts\Routing\UrlGenerator
+   * @var \Illuminate\Routing\UrlGenerator
    */
   protected $url;
 
@@ -36,7 +36,7 @@ class FormBuilder
   /**
    * The session store implementation.
    *
-   * @var \Illuminate\Session\SessionInterface
+   * @var \Illuminate\Session\Store
    */
   protected $session;
 
@@ -78,7 +78,7 @@ class FormBuilder
   /**
    * Create a new form builder instance.
    *
-   * @param  \Illuminate\Contracts\Routing\UrlGenerator $url
+   * @param  \Illuminate\Routing\UrlGenerator $url
    * @param  \Collective\Html\HtmlBuilder     $html
    * @param  string                           $csrfToken
    *
@@ -870,20 +870,6 @@ class FormBuilder
   }
 
   /**
-   * Create a color input field.
-   *
-   * @param  string $name
-   * @param  string $value
-   * @param  array  $options
-   *
-   * @return string
-   */
-  public function color($name, $value = null, $options = [])
-  {
-      return $this->input('color', $name, $value, $options);
-  }
-
-  /**
    * Create a submit button element.
    *
    * @param  string $value
@@ -1075,7 +1061,10 @@ class FormBuilder
       }
 
       if (isset($this->model)) {
-          return $this->getModelValueAttribute($name);
+          if($this->getModelValueAttribute($name) instanceof Collection)
+              return $this->getModelValueAttribute($name)->all();
+          else
+              return $this->getModelValueAttribute($name);
       }
   }
 
@@ -1130,7 +1119,7 @@ class FormBuilder
   /**
    * Get the session store implementation.
    *
-   * @return  \Illuminate\Session\SessionInterface  $session
+   * @return  \Illuminate\Session\Store  $session
    */
   public function getSessionStore()
   {
@@ -1140,11 +1129,11 @@ class FormBuilder
   /**
    * Set the session store implementation.
    *
-   * @param  \Illuminate\Session\SessionInterface $session
+   * @param  \Illuminate\Session\Store $session
    *
    * @return $this
    */
-  public function setSessionStore(SessionInterface $session)
+  public function setSessionStore(Session $session)
   {
       $this->session = $session;
 
